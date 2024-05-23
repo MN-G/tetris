@@ -10,6 +10,10 @@ defmodule Tetris.Tetromino do
     new(shape: random_shape())
   end
 
+  def points(tetro) do
+    [tetro.location]
+  end
+
   defp random_shape do
     ~w(i t o l j z s)a
     |> Enum.random()
