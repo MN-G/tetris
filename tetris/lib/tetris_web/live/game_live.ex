@@ -22,7 +22,8 @@ defmodule TetrisWeb.GameLive do
     ~H"""
     <div>
       <svg width="200" height="400">
-        <rect height="400" width="200" style="fill:rgb=(0,0,0);" /> <%= render_points(assigns) %>
+        <rect height="400" width="200" style="fill:rgb=(0,0,0);" /> <% [{x, y}] = @points %>
+        <.render_points x={x} y={y} />
       </svg>
     </div>
     """
@@ -30,11 +31,12 @@ defmodule TetrisWeb.GameLive do
 
   attr :x, :integer, required: true
   attr :y, :integer, required: true
-  attr :myself, :any, required: true
 
+  # <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style="fill:rgb(255,0,0);" />
   defp render_points(assigns) do
     ~H"""
-    <rect height="20" width="20" x={(@x - 1) * 20} y={@y(-1) * 20} style="fill:rgb=(255,0,0);" />
+    <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style="fill:rgb(255,0,0);" />
+    <%= IO.puts("x: #{@x}, y: #{@y}") %>
     """
   end
 
@@ -46,13 +48,15 @@ defmodule TetrisWeb.GameLive do
     assign(socket, points: Tetromino.points(socket.assigns.tetro))
   end
 
+  def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
+    new_tetromino(socket)
+  end
+
   def down(%{assigns: %{tetro: tetro}} = socket) do
-    socket
-    |> assign(tetro: Tetromino.down(tetro))
-    |> display()
+    assign(socket, tetro: Tetromino.down(tetro))
   end
 
   def handle_info(:tick, socket) do
-    {:noreply, down(socket)}
+    {:noreply, socket |> down |> display}
   end
 end
