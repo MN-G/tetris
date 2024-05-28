@@ -1,7 +1,4 @@
 defmodule Tetris.Point do
-  """
-  crc
-  """
 
   def origin() do
     {0, 0}
@@ -18,4 +15,8 @@ defmodule Tetris.Point do
   def down({x, y}) do
     {x, y + 1}
   end
+   
+  def move({x, y}, {dx, dy}) do
+    {x + dx, y + dy}
+    end
 end

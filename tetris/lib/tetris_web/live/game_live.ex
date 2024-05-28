@@ -11,9 +11,8 @@ defmodule TetrisWeb.GameLive do
     ~H"""
     <div>
       <h1>Welcome to Tetris</h1>
-       <%= render_board(assigns) %> <% [{x, y}] = @points %> <pre> 
-        {<%= x%>, <%= y%>} 
-      </pre>
+       <%= render_board(assigns) %>
+      <%= inspect @tetro %> 
     </div>
     """
   end
@@ -22,8 +21,10 @@ defmodule TetrisWeb.GameLive do
     ~H"""
     <div>
       <svg width="200" height="400">
-        <rect height="400" width="200" style="fill:rgb=(0,0,0);" /> <% [{x, y}] = @points %>
-        <.render_points x={x} y={y} />
+        <rect height="400" width="200" style="fill:rgb=(0,0,0);" />
+        <%= for {x,y} <- @points do %>
+          <.render_points x={x} y={y} />
+        <% end %>
       </svg>
     </div>
     """
@@ -36,7 +37,6 @@ defmodule TetrisWeb.GameLive do
   defp render_points(assigns) do
     ~H"""
     <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style="fill:rgb(255,0,0);" />
-    <%= IO.puts("x: #{@x}, y: #{@y}") %>
     """
   end
 
@@ -45,7 +45,7 @@ defmodule TetrisWeb.GameLive do
   end
 
   defp display(socket) do
-    assign(socket, points: Tetromino.points(socket.assigns.tetro))
+    assign(socket, points: Tetromino.show(socket.assigns.tetro))
   end
 
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
