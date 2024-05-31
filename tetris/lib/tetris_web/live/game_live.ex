@@ -12,7 +12,7 @@ defmodule TetrisWeb.GameLive do
 
   def render(assigns) do
     ~H"""
-    <div>
+    <div phx-window-keydown="keystroke">
       <h1>Welcome to Tetris</h1>
        <%= render_board(assigns) %> <pre>
       <%= inspect @tetro %> 
@@ -75,6 +75,10 @@ defmodule TetrisWeb.GameLive do
   end
 
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down |> rotate |> display}
+    {:noreply, socket |> down |> display}
+  end
+
+  def handle_event("keystroke", _unsigned_params, socket) do
+    {:noreply, socket |> rotate |> display}
   end
 end
