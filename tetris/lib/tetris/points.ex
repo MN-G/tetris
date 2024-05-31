@@ -5,5 +5,9 @@ defmodule Tetris.Points do
     points
     |> Enum.map(fn point -> Point.move(point, change) end)
   end
-end
 
+  def rotate(points, degrees) do
+    points
+    |> Enum.map(fn point -> Point.rotate(point, degrees) end)
+  end
+end

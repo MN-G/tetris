@@ -4,8 +4,8 @@ defmodule TetrisWeb.GameLive do
 
   def mount(_params, _session, socket) do
     if connected?(socket) do
-    :timer.send_interval(500, :tick)
-      end
+      :timer.send_interval(500, :tick)
+    end
 
     {:ok, socket |> new_tetromino |> display}
   end
@@ -14,8 +14,7 @@ defmodule TetrisWeb.GameLive do
     ~H"""
     <div>
       <h1>Welcome to Tetris</h1>
-       <%= render_board(assigns) %>
-      <pre>
+       <%= render_board(assigns) %> <pre>
       <%= inspect @tetro %> 
       </pre>
     </div>
@@ -42,7 +41,7 @@ defmodule TetrisWeb.GameLive do
   # <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style="fill:rgb(255,0,0);" />
   defp render_points(assigns) do
     ~H"""
-    <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style={@shape}; />
+    <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style={@shape} ; />
     """
   end
 
@@ -63,6 +62,10 @@ defmodule TetrisWeb.GameLive do
     assign(socket, points: Tetromino.show(socket.assigns.tetro))
   end
 
+  def rotate(%{assigns: %{tetro: tetro}} = socket) do
+    assign(socket, tetro: Tetromino.rotate(tetro))
+  end
+
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
     new_tetromino(socket)
   end
@@ -72,6 +75,6 @@ defmodule TetrisWeb.GameLive do
   end
 
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down |> display}
+    {:noreply, socket |> down |> rotate |> display}
   end
 end
