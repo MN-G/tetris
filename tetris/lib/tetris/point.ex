@@ -44,4 +44,8 @@ defmodule Tetris.Point do
   def rotate(point, 270) do
     point |> mirror() |> transpose()
   end
+
+  def in_bounds?({x, _y}) when x < 1, do: false
+  def in_bounds?({x, _y}) when x > 10, do: false
+  def in_bounds?(_point), do: true
 end

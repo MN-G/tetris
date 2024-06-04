@@ -66,6 +66,14 @@ defmodule TetrisWeb.GameLive do
     assign(socket, tetro: Tetromino.rotate(tetro))
   end
 
+  def left(%{assigns: %{tetro: tetro}} = socket) do
+    assign(socket, tetro: Tetromino.left(tetro))
+  end
+
+  def right(%{assigns: %{tetro: tetro}} = socket) do
+    assign(socket, tetro: Tetromino.right(tetro))
+  end
+
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
     new_tetromino(socket)
   end
@@ -74,11 +82,35 @@ defmodule TetrisWeb.GameLive do
     assign(socket, tetro: Tetromino.down(tetro))
   end
 
+  def move(%{assigns: %{tetro: tetro}} = socket, "l") do
+    assign(socket, tetro: Tetromino.right(tetro))
+  end
+
+  def move(%{assigns: %{tetro: tetro}} = socket, "h") do
+    assign(socket, tetro: Tetromino.left(tetro))
+  end
+
+  def move(%{assigns: %{tetro: tetro}} = socket, "j") do
+    assign(socket, tetro: Tetromino.down(tetro))
+  end
+
   def handle_info(:tick, socket) do
     {:noreply, socket |> down |> display}
   end
 
-  def handle_event("keystroke", _unsigned_params, socket) do
+  def handle_event("keystroke", %{"key" => "f"}, socket) do
     {:noreply, socket |> rotate |> display}
+  end
+
+  def handle_event("keystroke", %{"key" => "h"}, socket) do
+    {:noreply, socket |> left |> display}
+  end
+
+  def handle_event("keystroke", %{"key" => "l"}, socket) do
+    {:noreply, socket |> right |> display}
+  end
+
+  def handle_event("keystroke", _key, socket) do
+    {:noreply, socket}
   end
 end

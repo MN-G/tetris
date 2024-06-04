@@ -103,4 +103,6 @@ defmodule Tetris.Tetromino do
 
   defp rotate_degrees(270), do: 0
   defp rotate_degrees(d), do: d + 90
+  def maybe_move(_old, new, true = _valid), do: new
+  def maybe_move(old, _new, false = _valid), do: old
 end
