@@ -85,6 +85,10 @@ defmodule Tetris.Tetromino do
     |> Enum.random()
   end
 
+  def shape(%{location: {x, y}, shape: shape} = _tetro) do
+    {x, y, shape}
+  end
+
   def right(tetro) do
     %{tetro | location: Point.right(tetro.location)}
   end

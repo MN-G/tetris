@@ -15,7 +15,7 @@ defmodule TetrisWeb.GameLive do
     <div phx-window-keydown="keystroke">
       <h1>Welcome to Tetris</h1>
        <%= render_board(assigns) %> <pre>
-      <%= inspect @game.tetro %> 
+      <%= inspect @game %> 
       </pre>
     </div>
     """
@@ -26,7 +26,7 @@ defmodule TetrisWeb.GameLive do
     <div>
       <svg width="200" height="400">
         <rect height="400" width="200" style="fill:rgb=(0,0,0);" />
-        <%= for {x,y} <- @game.points do %>
+        <%= for {x,y} <- @game.points ++ Game.junkyard_points(@game) do %>
           <.render_points x={x} y={y} shape={color(@game.tetro.shape)} />
         <% end %>
       </svg>
@@ -72,10 +72,6 @@ defmodule TetrisWeb.GameLive do
 
   def right(%{assigns: %{game: game}} = socket) do
     assign(socket, game: Game.right(game))
-  end
-
-  def down(%{assigns: %{game: %{tetro: %{location: {_, 20}}}}} = socket) do
-    new_tetromino(socket)
   end
 
   def down(%{assigns: %{game: game}} = socket) do
