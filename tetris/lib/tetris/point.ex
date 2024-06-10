@@ -53,8 +53,15 @@ defmodule Tetris.Point do
     point_with_shape
   end
 
+  def valid?(point, junkyard) do
+    in_bounds?(point) and !colide?(point, junkyard)
+  end
+
   def in_bounds?({x, _y, _c}) when x < 1, do: false
   def in_bounds?({x, _y, _c}) when x > 10, do: false
   def in_bounds?({_x, y, _c}) when y > 20, do: false
   def in_bounds?(_point), do: true
+
+  def colide?({x, y, _c}, junkyard), do: colide?({x, y}, junkyard)
+  def colide?(point, junkyard), do: !!junkyard[point]
 end
