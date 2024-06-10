@@ -26,8 +26,8 @@ defmodule TetrisWeb.GameLive do
     <div>
       <svg width="200" height="400">
         <rect height="400" width="200" style="fill:rgb=(0,0,0);" />
-        <%= for {x,y} <- @game.points ++ Game.junkyard_points(@game) do %>
-          <.render_points x={x} y={y} shape={color(@game.tetro.shape)} />
+        <%= for {x,y,shape} <- @game.points ++ Game.junkyard_points(@game) do %>
+          <.render_points x={x} y={y} shape={color(shape)} />
         <% end %>
       </svg>
     </div>

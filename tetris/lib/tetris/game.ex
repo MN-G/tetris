@@ -57,7 +57,7 @@ defmodule Tetris.Game do
     new_junkyard =
       old
       |> Tetromino.show()
-      |> Enum.map(fn {x, y} -> {{x, y}, old.shape} end)
+      |> Enum.map(fn {x, y, _shape} -> {{x, y}, old.shape} end)
       |> Enum.into(game.junkyard)
 
     %{game | junkyard: new_junkyard}
@@ -65,7 +65,7 @@ defmodule Tetris.Game do
 
   def junkyard_points(game) do
     game.junkyard
-    |> Enum.map(fn {{x, y}, _shape} -> {x, y} end)
+    |> Enum.map(fn {{x, y}, shape} -> {x, y, shape} end)
   end
 
   def rotate(game), do: move(game, &Tetromino.rotate/1)

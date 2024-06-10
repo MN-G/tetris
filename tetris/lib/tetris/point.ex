@@ -45,8 +45,16 @@ defmodule Tetris.Point do
     point |> mirror() |> transpose()
   end
 
-  def in_bounds?({x, _y}) when x < 1, do: false
-  def in_bounds?({x, _y}) when x > 10, do: false
-  def in_bounds?({_x, y}) when y > 20, do: false
+  def add_shape({x, y} = _point, shape) do
+    {x, y, shape}
+  end
+
+  def add_shape(point_with_shape, _shape) do
+    point_with_shape
+  end
+
+  def in_bounds?({x, _y, _c}) when x < 1, do: false
+  def in_bounds?({x, _y, _c}) when x > 10, do: false
+  def in_bounds?({_x, y, _c}) when y > 20, do: false
   def in_bounds?(_point), do: true
 end

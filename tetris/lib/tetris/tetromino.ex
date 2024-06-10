@@ -15,6 +15,7 @@ defmodule Tetris.Tetromino do
     |> points
     |> Points.rotate(tetro.rotation)
     |> Points.move(tetro.location)
+    |> points_with_shape(tetro)
   end
 
   def points(%{shape: :l} = _tetro) do
@@ -80,13 +81,14 @@ defmodule Tetris.Tetromino do
     ]
   end
 
+  def points_with_shape(points, %{shape: shape} = _tetro) do
+    points
+    |> Enum.map(fn point -> Point.add_shape(point, shape) end)
+  end
+
   defp random_shape do
     ~w(i t o l j z s)a
     |> Enum.random()
-  end
-
-  def shape(%{location: {x, y}, shape: shape} = _tetro) do
-    {x, y, shape}
   end
 
   def right(tetro) do
