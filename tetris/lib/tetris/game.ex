@@ -49,7 +49,7 @@ defmodule Tetris.Game do
   def move_down_or_merge(game, old, _new, false = _valid) do
     game
     |> merge(old)
-    |> new_tetromino()
+    |> new_tetromino
     |> show
     |> check_game_over
   end
@@ -62,6 +62,45 @@ defmodule Tetris.Game do
       |> Enum.into(game.junkyard)
 
     %{game | junkyard: new_junkyard}
+    |> collapse_rows
+  end
+
+  def collapse_rows(game) do
+    rows = complete_rows(game)
+
+    game
+    |> clear(rows)
+    |> score_rows(rows)
+  end
+
+  def clear(game, []), do: game
+
+  def clear(game, [y | ys]), do: remove_row(game, y) |> clear(ys)
+
+  def remove_row(game, row) do
+    new_junkyard =
+      game.junkyard
+      |> Enum.reject(fn {{_x, y}, _shape} -> y == row end)
+      |> Enum.map(fn {{x, y}, shape} ->
+        {{x, maybe_move_y(y, row)}, shape}
+      end)
+      |> Map.new()
+
+    %{game | junkyard: new_junkyard}
+  end
+
+  defp maybe_move_y(y, row) when y < row do
+    y + 1
+  end
+
+  defp maybe_move_y(y, _row), do: y
+
+  def complete_rows(game) do
+    game.junkyard
+    |> Map.keys()
+    |> Enum.group_by(&elem(&1, 1))
+    |> Enum.filter(fn {_y, list} -> length(list) == 10 end)
+    |> Enum.map(fn {y, _list} -> y end)
   end
 
   def junkyard_points(game) do
@@ -81,6 +120,11 @@ defmodule Tetris.Game do
 
   def inc_score(game, value) do
     %{game | score: game.score + value}
+  end
+
+  def score_rows(game, rows) do
+    new_score = :math.pow(2, length(rows)) |> round |> Kernel.*(100)
+    %{game | score: new_score}
   end
 
   def check_game_over(game) do

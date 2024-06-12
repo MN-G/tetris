@@ -68,13 +68,17 @@ defmodule TetrisWeb.GameLive.Playing do
 
   def maybe_end_game(%{assigns: %{game: %{game_over: true}}} = socket) do
     socket
-    |> push_redirect(to: "/game/game_over")
- end 
+    |> push_redirect(to: "/game/game_over?score=#{socket.assigns.game.score}")
+  end
 
   def maybe_end_game(socket), do: socket
 
+  def inc_score(%{assigns: %{game: game}} = socket) do
+    assign(socket, game: Game.inc_score(game, 100))
+  end
+
   def handle_info(:tick, socket) do
-    {:noreply, socket |> maybe_end_game |> down}
+    {:noreply, socket |> maybe_end_game |> inc_score |> down}
   end
 
   def handle_event("keystroke", %{"key" => "f"}, socket) do
@@ -97,4 +101,3 @@ defmodule TetrisWeb.GameLive.Playing do
     {:noreply, socket}
   end
 end
-
