@@ -1,6 +1,6 @@
 defmodule Tetris.Tetromino do
   alias Tetris.{Point, Points}
-  defstruct shape: :l, rotation: 0, location: {3, 0}
+  defstruct shape: :l, rotation: 0, location: {3, -3}
 
   def new(options \\ []) do
     __struct__(options)

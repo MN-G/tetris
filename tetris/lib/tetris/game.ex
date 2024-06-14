@@ -1,10 +1,21 @@
 defmodule Tetris.Game do
   alias Tetris.{Points, Tetromino}
-  defstruct [:tetro, points: [], score: 0, junkyard: %{}, game_over: false]
+
+  defstruct [
+    :tetro,
+    :next_tetro,
+    next_tetro_points: [],
+    points: [],
+    score: 0,
+    junkyard: %{},
+    game_over: false
+  ]
 
   def new do
     __struct__()
     |> new_tetromino
+    |> next_new
+    |> new_tetro_points
     |> show
   end
 
@@ -52,6 +63,8 @@ defmodule Tetris.Game do
     |> new_tetromino
     |> show
     |> check_game_over
+    |> next_new
+    |> new_tetro_points
   end
 
   def merge(game, old) do
@@ -110,12 +123,24 @@ defmodule Tetris.Game do
 
   def rotate(game), do: move(game, &Tetromino.rotate/1)
 
-  def new_tetromino(game) do
+  def new_tetromino(%{next_tetro: nil} = game) do
     %{game | tetro: Tetromino.new_random()}
+  end
+
+  def new_tetromino(%{next_tetro: next} = game) do
+    %{game | tetro: next}
+  end
+
+  def next_new(game) do
+    %{game | next_tetro: Tetromino.new_random()}
   end
 
   def show(game) do
     %{game | points: Tetromino.show(game.tetro)}
+  end
+
+  def new_tetro_points(game) do
+    %{game | next_tetro_points: Tetromino.show(game.next_tetro)}
   end
 
   def inc_score(game, value) do
@@ -124,7 +149,7 @@ defmodule Tetris.Game do
 
   def score_rows(game, rows) do
     new_score = :math.pow(2, length(rows)) |> round |> Kernel.*(100)
-    %{game | score: new_score}
+    %{game | score: new_score + game.score}
   end
 
   def check_game_over(game) do
@@ -132,6 +157,8 @@ defmodule Tetris.Game do
       game.tetro
       |> Tetromino.show()
       |> Points.valid?(game.junkyard)
+
+    IO.inspect(game)
 
     %{game | game_over: !game_over}
   end

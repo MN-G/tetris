@@ -23,6 +23,19 @@ defmodule TetrisWeb.GameLive.Playing do
     """
   end
 
+  defp render_next_tetro(assigns) do
+    ~H"""
+    <div>
+      <svg width="120" height="120">
+        <rect height="120" width="120" style="fill:rgb=(0,0,0);" />
+        <%= for {x,y,shape} <- @game.next_tetro_points do %>
+          <.render_next_points x={x} y={y} shape={color(shape)} />
+        <% end %>
+      </svg>
+    </div>
+    """
+  end
+
   attr :x, :integer, required: true
   attr :y, :integer, required: true
   attr :shape, :string, required: true
@@ -30,6 +43,12 @@ defmodule TetrisWeb.GameLive.Playing do
   defp render_points(assigns) do
     ~H"""
     <rect height="20" width="20" x={(@x - 1) * 20} y={(@y - 1) * 20} style={@shape} ; />
+    """
+  end
+
+  defp render_next_points(assigns) do
+    ~H"""
+    <rect height="20" width="20" x={(@x - 3) * 20} y={(@y + 3) * 20} style={@shape} ; />
     """
   end
 
